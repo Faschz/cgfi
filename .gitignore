@@ -1,0 +1,10 @@
+# Python Cache Files
+__pycache__/
+.pyc
+
+# E-Reader Files
+.raw
+.bin
+.header
+.vpk
+.dec
