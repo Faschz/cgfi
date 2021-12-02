@@ -21,11 +21,8 @@ class Letter(Card):
 
         self.clamp_values()
 
-    def clamp_values(self):
-        """
-        Set the card contents to specific byte lengths to fit inside the binary
-        data for the e-reader card file.
-        """
+    def clamp_values(self) -> None:
+        """Make sure all data fits within the 256 byte structure"""
 
         self.contents = self.contents.ljust(248)[:248]
         self.letter_type &= 0xFF
@@ -34,12 +31,8 @@ class Letter(Card):
         self.name_position &= 0xFF
         self.card_id &= 0xFFFF
 
-    def create_dec(self, file):
-        """
-        Creates the .dec file from the card object for a post office letter.
-
-        @param file: Path to the .dec file.
-        """
+    def create_dec(self, file: str) -> None:
+        """Creates the .dec file from the card object for a post office letter"""
 
         # Make sure all of the data is valid!
         self.clamp_values()
@@ -60,39 +53,22 @@ class Design(Card):
     def __init__(self):
         super().__init__()
 
-def convert_dec_to_vpk(src, dst):
-    """
-    Convert an e-reader .dec to .vpk.
-
-    @param src: Path to the .dec file.
-    @param dst: Path to the .vpk file.
-    """
+def convert_dec_to_vpk(src: str, dst: str) -> None:
+    """Convert an e-reader .dec to .vpk"""
 
     #TODO: Replace the command line functionality with nedclib capabilities.
     #nedclib.NVPK_compress(data_in, 256, 2, 4096, 256, 0, file_out, None)
     os.system("nevpk.exe -i {} -o {} -v -c -level 2".format(src, dst))
 
-def convert_vpk_to_dec(src, dst):
-    """
-    Convert an e-reader .vpk to .dec.
-
-    @param src: Path to the .vpk file.
-    @param dst: Path to the .dec file.
-    """
+def convert_vpk_to_dec(src: str, dst: str) -> None:
+    """Convert an e-reader .vpk to .dec"""
 
     #TODO: Replace the command line functionality with nedclib capabilities.
     #nedclib.vpk_decompress(data_in, file_out)
     os.system("nevpk.exe -i {} -o {} -v -d".format(src, dst))
 
-def convert_vpk_to_bin(src1, src2, src3, dst):
-    """
-    Converts an e-reader's .vpk files and header file into a .bin file.
-
-    @param src1: Path to the header file.
-    @param src2: Path to the GBA .vpk file.
-    @param src3: Path to the GC .vpk file.
-    @param dst: Path to the .bin file.
-    """
+def convert_vpk_to_bin(src1: str, src2: str, src3: str, dst: str) -> None:
+    """Converts an e-reader's .vpk files and header file into a .bin file"""
 
     b = bytearray()
 
@@ -110,15 +86,8 @@ def convert_vpk_to_bin(src1, src2, src3, dst):
     with open(dst, "wb") as f:
         f.write(b)
 
-def convert_bin_to_vpk(src, dst1, dst2, dst3):
-    """
-    Converts an e-reader .bin file to .vpk files and a header file.
-
-    @param src: Path to the .bin file.
-    @param dst1: Path to the header file.
-    @param dst2: Path to the GBA .vpk file.
-    @param dst3: Path to the GC .vpk file.
-    """
+def convert_bin_to_vpk(src: str, dst1: str, dst2: str, dst3: str) -> None:
+    """Converts an e-reader .bin file to .vpk files and a header file"""
 
     with open(src, "rb") as f:
         b = f.read()
@@ -137,33 +106,18 @@ def convert_bin_to_vpk(src, dst1, dst2, dst3):
         f.write(b"vpk0")
         f.write(b[2])
 
-def convert_bin_to_raw(src, dst):
-    """
-    Convert an e-reader .bin to .raw.
-
-    @param src: Path to the .bin file.
-    @param dst: Path to the .raw file.
-    """
+def convert_bin_to_raw(src: str, dst: str) -> None:
+    """Convert an e-reader .bin to .raw"""
 
     nedclib.bin2raw(src, dst)
 
-def convert_raw_to_bin(src, dst):
-    """
-    Convert an e-reader .raw to .bin.
-
-    @param src: Path to the .raw file.
-    @param dst: Path to the .bin file.
-    """
+def convert_raw_to_bin(src: str, dst: str) -> None:
+    """Convert an e-reader .raw to .bin"""
 
     nedclib.raw2bin(src, dst)
 
-def convert_raw_to_bmp(src, dst):
-    """
-    Convert an e-reader .raw to .bmp.
-
-    @param src: Path to the .raw file.
-    @param dst: Path to the .bmp file.
-    """
+def convert_raw_to_bmp(src: str, dst: str) -> None:
+    """Convert an e-reader .raw to .bmp"""
 
     nedclib.dpi_multiplier.value = 2
     nedclib.raw2bmp(src, dst)
